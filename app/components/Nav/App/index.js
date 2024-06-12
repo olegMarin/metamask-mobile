@@ -66,6 +66,7 @@ import AssetOptions from '../../Views/AssetOptions';
 import ImportPrivateKey from '../../Views/ImportPrivateKey';
 import ImportPrivateKeySuccess from '../../Views/ImportPrivateKeySuccess';
 import ConnectQRHardware from '../../Views/ConnectQRHardware';
+import ConnectHitoHardware from '../../Views/ConnectHitoHardware';
 import SelectHardwareWallet from '../../Views/ConnectHardware/SelectHardware';
 import LedgerAccountInfo from '../../Views/LedgerAccountInfo';
 import LedgerConnect from '../../Views/LedgerConnect';
@@ -720,6 +721,16 @@ const App = ({ userLoggedIn }) => {
       }}
     >
       <Stack.Screen name="ConnectQRHardware" component={ConnectQRHardware} />
+    </Stack.Navigator>
+  );
+
+  const ConnectHitoHardwareFlow = () => (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="ConnectHitoHardware" component={ConnectHitoHardware} />
     </Stack.Navigator>
   );
 

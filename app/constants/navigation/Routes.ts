@@ -28,6 +28,7 @@ const Routes = {
     CONNECT: 'ConnectHardwareWalletFlow',
     SELECT_DEVICE: 'SelectHardwareWallet',
     CONNECT_QR_DEVICE: 'ConnectQRHardwareFlow',
+    CONNECT_HITO_DEVICE: 'ConnectHitoHardwareFlow',
     CONNECT_LEDGER: 'ConnectLedgerFlow',
     LEDGER_ACCOUNT: 'LedgerAccountInfo',
     LEDGER_CONNECT: 'LedgerConnect',

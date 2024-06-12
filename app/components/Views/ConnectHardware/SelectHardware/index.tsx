@@ -77,6 +77,13 @@ const ledgerLogoLight = require(ledgerLogoLightImgPath);
 const ledgerLogoDarkImgPath = 'images/ledger-dark.png';
 const ledgerLogoDark = require(ledgerLogoDarkImgPath);
 
+// Hito Logo
+const hitoLogoLightImgPath = 'images/hito-light.png';
+const hitoLogoLight = require(hitoLogoLightImgPath);
+
+const hitoLogoDarkImgPath = 'images/hito-dark.png';
+const hitoLogoDark = require(hitoLogoDarkImgPath);
+
 // QR Hardware Logo
 const qrHardwareLogoLightImgPath = 'images/qrhardware-light.png';
 const qrHardwareLogoLight = require(qrHardwareLogoLightImgPath);
@@ -103,6 +110,10 @@ const SelectHardwareWallet = () => {
 
   const navigateToConnectQRWallet = () => {
     navigation.navigate(Routes.HW.CONNECT_QR_DEVICE);
+  };
+
+  const navigateToConnectHitoWallet = () => {
+    navigation.navigate(Routes.HW.CONNECT_HITO_DEVICE);
   };
 
   const navigateToConnectLedger = async () => {
@@ -145,6 +156,14 @@ const SelectHardwareWallet = () => {
     return renderHardwareButton(qrHardwareLogo, navigateToConnectQRWallet);
   };
 
+  const HitoButton = () => {
+    const hitoHardwareLogo = useAssetFromTheme(
+      hitoLogoLight,
+      hitoLogoDark,
+    );
+    return renderHardwareButton(hitoHardwareLogo, navigateToConnectHitoWallet);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.textContainer}>
@@ -154,6 +173,7 @@ const SelectHardwareWallet = () => {
       </View>
       <View style={styles.buttonsContainer}>
         <LedgerButton />
+        <HitoButton />
         <QRButton />
       </View>
     </SafeAreaView>
