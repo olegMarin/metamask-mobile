@@ -838,6 +838,11 @@ const App = ({ userLoggedIn }) => {
               options={{ animationEnabled: true }}
             />
             <Stack.Screen
+              name="ConnectHitoHardwareFlow"
+              component={ConnectHitoHardwareFlow}
+              options={{ animationEnabled: true }}
+            />
+            <Stack.Screen
               name={Routes.HW.CONNECT_LEDGER}
               component={LedgerConnectFlow}
             />

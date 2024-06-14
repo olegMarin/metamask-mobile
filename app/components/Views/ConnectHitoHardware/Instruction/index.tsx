@@ -13,16 +13,16 @@ import { useTheme } from '../../../../util/theme';
 import { createStyles } from './styles';
 import StyledButton from '../../../UI/StyledButton';
 
-interface IConnectQRInstructionProps {
+interface IConnectHipoInstructionProps {
   navigation: any;
   onConnect: () => void;
-  renderAlert: () => Element;
+  renderAlert: () => false | React.JSX.Element;
 }
 
 // eslint-disable-next-line import/no-commonjs
-const connectQRHardwareImg = require('images/connect-qr-hardware.png');
+const connectHipoHardwareImg = require('images/connect-qr-hardware.png');
 
-const ConnectQRInstruction = (props: IConnectQRInstructionProps) => {
+const ConnectHipoInstruction = (props: IConnectHipoInstructionProps) => {
   const { onConnect, renderAlert, navigation } = props;
   const theme = useTheme();
   const styles = createStyles(theme);
@@ -32,7 +32,7 @@ const ConnectQRInstruction = (props: IConnectQRInstructionProps) => {
       screen: 'SimpleWebview',
       params: {
         url: KEYSTONE_SUPPORT_VIDEO,
-        title: strings('connect_qr_hardware.description2'),
+        title: strings('connect_hipo_hardware.description2'),
       },
     });
   };
@@ -41,7 +41,7 @@ const ConnectQRInstruction = (props: IConnectQRInstructionProps) => {
       screen: 'SimpleWebview',
       params: {
         url: KEYSTONE_LEARN_MORE,
-        title: strings('connect_qr_hardware.keystone'),
+        title: strings('connect_hipo_hardware.keystone'),
       },
     });
   };
@@ -50,7 +50,7 @@ const ConnectQRInstruction = (props: IConnectQRInstructionProps) => {
       screen: 'SimpleWebview',
       params: {
         url: KEYSTONE_SUPPORT,
-        title: strings('connect_qr_hardware.description4'),
+        title: strings('connect_hipo_hardware.description4'),
       },
     });
   };
@@ -60,45 +60,45 @@ const ConnectQRInstruction = (props: IConnectQRInstructionProps) => {
         contentContainerStyle={styles.container}
         style={styles.scrollWrapper}
       >
-        <Text style={styles.title}>{strings('connect_qr_hardware.title')}</Text>
+        <Text style={styles.title}>{strings('connect_hipo_hardware.title')}</Text>
         {renderAlert()}
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            {strings('connect_qr_hardware.description1')}
+            {strings('connect_hipo_hardware.description1')}
           </Text>
           <Text style={[styles.text, styles.link]} onPress={navigateToVideo}>
-            {strings('connect_qr_hardware.description2')}
+            {strings('connect_hipo_hardware.description2')}
           </Text>
           <Text style={styles.text}>
-            {strings('connect_qr_hardware.description3')}
+            {strings('connect_hipo_hardware.description3')}
           </Text>
           <Text style={styles.keystone}>
-            {strings('connect_qr_hardware.keystone')}
+            {strings('connect_hipo_hardware.keystone')}
           </Text>
           <View style={styles.buttonGroup}>
             <Text
               style={[styles.text, styles.link, styles.linkMarginRight]}
               onPress={navigateToLearnMore}
             >
-              {strings('connect_qr_hardware.learnMore')}
+              {strings('connect_hipo_hardware.learnMore')}
             </Text>
             <Text
               style={[styles.text, styles.link]}
               onPress={navigateToTutorial}
             >
-              {strings('connect_qr_hardware.tutorial')}
+              {strings('connect_hipo_hardware.tutorial')}
             </Text>
           </View>
           <Text style={styles.text}>
-            {strings('connect_qr_hardware.description5')}
+            {strings('connect_hipo_hardware.description5')}
           </Text>
           <Text style={styles.text}>
-            {strings('connect_qr_hardware.description6')}
+            {strings('connect_hipo_hardware.description6')}
           </Text>
         </View>
         <Image
           style={styles.image}
-          source={connectQRHardwareImg}
+          source={connectHipoHardwareImg}
           resizeMode={'contain'}
         />
       </ScrollView>
@@ -108,11 +108,11 @@ const ConnectQRInstruction = (props: IConnectQRInstructionProps) => {
           onPress={onConnect}
           style={styles.button}
         >
-          {strings('connect_qr_hardware.button_continue')}
+          {strings('connect_hipo_hardware.button_continue')}
         </StyledButton>
       </View>
     </View>
   );
 };
 
-export default ConnectQRInstruction;
+export default ConnectHipoInstruction;

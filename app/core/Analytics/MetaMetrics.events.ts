@@ -192,6 +192,9 @@ enum EVENT_NAME {
   QR_HARDWARE_TRANSACTION_CANCELED = 'User canceled QR hardware transaction',
   HARDWARE_WALLET_ERROR = 'Hardware wallet error',
 
+  //Hipo  Harware Wallet
+  CONTINUE_HITO_HARDWARE_WALLET = 'Clicked Continue Hito Hardware Wallet',
+
   // Tokens
   TOKEN_DETECTED = 'Token Detected',
   TOKEN_IMPORT_CLICKED = 'Token Import Clicked',
@@ -587,6 +590,9 @@ const events = {
   CONNECT_HARDWARE_WALLET: generateOpt(EVENT_NAME.CONNECT_HARDWARE_WALLET),
   CONTINUE_QR_HARDWARE_WALLET: generateOpt(
     EVENT_NAME.CONTINUE_QR_HARDWARE_WALLET,
+  ),
+  CONTINUE_HITO_HARDWARE_WALLET: generateOpt(
+    EVENT_NAME.CONTINUE_HITO_HARDWARE_WALLET,
   ),
   CONNECT_HARDWARE_WALLET_SUCCESS: generateOpt(
     EVENT_NAME.CONNECT_HARDWARE_WALLET_SUCCESS,

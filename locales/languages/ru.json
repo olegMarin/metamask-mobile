@@ -670,6 +670,24 @@
     "select_accounts": "Выберите счет",
     "please_wait": "Пожалуйста, подождите..."
   },
+  "connect_hipo_hardware": {
+    "title": "Подключите аппаратный кошелек Hipo посредством NFC",
+    "description1": "Подключите аппаратный кошелек с физически разделённым оборудованием, который общается через NFC.",
+    "description2": "Как это работает?",
+    "description3": "Вот официально поддерживаемые аппаратные кошельки с физически разделённым оборудованием:",
+    "keystone": "Keystone",
+    "learnMore": "Подробнее",
+    "tutorial": "Руководство",
+    "description4": "Keystone (руководство)",
+    "description5": "1. Разблокируйте свой Keystone",
+    "description6": "2. Нажмите на ··· Меню, затем перейдите к «Синхронизировать»",
+    "button_continue": "Продолжить",
+    "hint_text": "Отсканируйте свой кошелек Keystone, чтобы",
+    "purpose_connect": "подключиться",
+    "purpose_sign": "подтвердить транзакцию",
+    "select_accounts": "Выберите счет",
+    "please_wait": "Пожалуйста, подождите..."
+  },
   "data_collection_modal": {
     "accept": "Okay",
     "content": "You turned off data collection for our marketing purposes. This only applies to this device. If you use MetaMask on other devices, make sure to opt out there as well."
