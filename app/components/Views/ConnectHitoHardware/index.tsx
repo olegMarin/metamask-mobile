@@ -6,12 +6,17 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import Engine from '../../../core/Engine';
-import AnimatedHitoScannerModal from '../../UI/HitoHardware/AnimatedHitoScanner';
 import AccountSelector from '../../UI/HardwareWallet/AccountSelector';
 import ConnectHitoInstruction from './Instruction';
-import Icon, { IconSize, IconName, IconColor }  from '../../../component-library/components/Icons/Icon';
+import Icon, { IconSize, IconName, IconColor } from '../../../component-library/components/Icons/Icon';
 import BlockingActionModal from '../../UI/BlockingActionModal';
 import { strings } from '../../../../locales/i18n';
 import { UR } from '@ngraveio/bc-ur';
@@ -31,6 +36,9 @@ import type { MetaMaskKeyring as HitoKeyring } from '@keystonehq/metamask-airgap
 import { KeyringTypes } from '@metamask/keyring-controller';
 import BannerAlert from 'app/component-library/components/Banners/Banner/variants/BannerAlert';
 import { BannerVariant } from 'app/component-library/components/Banners/Banner';
+import AnimatedHitoQRScannerModal from 'app/components/UI/HitoHardware/AnimatedHitoQRScanner';
+import AnimatedHitoNFCModal from '../../UI/HitoHardware/AnimatedHitoNFCModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface IConnectHitoHardwareProps {
   navigation: any;
@@ -125,6 +133,8 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
     },
   });
   const [scannerVisible, setScannerVisible] = useState(false);
+  const [nfcVisible, setNfcVisible] = useState(false);
+  const [isShowHitoNfcModal, setShowHitoNfcModal] = useState(true);
   const [blockingModalVisible, setBlockingModalVisible] = useState(false);
   const [accounts, setAccounts] = useState<
     { address: string; index: number; balance: string }[]
@@ -143,6 +153,47 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
   const hideScanner = useCallback(() => {
     setScannerVisible(false);
   }, []);
+
+
+  const readIsShowHitoNfcModalData = async () => {
+    try {
+      let value = await AsyncStorage.getItem('isShowHitoNfcModal');
+      if (value !== null) {
+        setShowHitoNfcModal(JSON.parse(value));
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+
+  const onToggleShowNfcModule = async () => {
+    try {
+      let value = JSON.stringify(!isShowHitoNfcModal);
+      await AsyncStorage.setItem('isShowHitoNfcModal', value);
+    } catch (error) {
+      // Error retrieving data
+    } finally {
+      setShowHitoNfcModal(!isShowHitoNfcModal);
+    }
+  }
+
+  const hideNfc = () => {
+    setNfcVisible(false);
+  }
+
+  const showNfc = () => {
+    setNfcVisible(true);
+  }
+
+  const onNfcBroadcastSuccess = () => {
+    setNfcVisible(false);
+    setScannerVisible(true);
+  }
+
+  useEffect(() => {
+    readIsShowHitoNfcModalData();
+  }, []);
+
 
   useEffect(() => {
     KeyringController.getAccounts().then((value: string[]) => {
@@ -174,7 +225,11 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
 
   useEffect(() => {
     if (HitoState.sync.reading) {
-      showScanner();
+      if (Platform.OS === 'ios' || !isShowHitoNfcModal) {
+        showScanner();
+      } else {
+        showNfc();
+      }
     } else {
       hideScanner();
     }
@@ -303,7 +358,7 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
     <Fragment>
       <View style={styles.container}>
         <View style={styles.header}>
-          
+
           <TouchableOpacity
             onPress={navigation.goBack}
             style={styles.navbarRightButton}
@@ -335,13 +390,21 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
           />
         )}
       </View>
-      <AnimatedHitoScannerModal
+      <AnimatedHitoQRScannerModal
         visible={scannerVisible}
         purpose={'sync'}
         onScanSuccess={onScanSuccess}
         onScanError={onScanError}
-        hideModal={hideScanner}
-      />
+        hideModal={hideScanner} />
+      <AnimatedHitoNFCModal
+        visible={nfcVisible}
+        purpose={'sync'}
+        isShowNfcModule={isShowHitoNfcModal}
+        onToggleShowNfcModule={onToggleShowNfcModule}
+        onNfcBroadcastSuccess={onNfcBroadcastSuccess}
+        hideModal={hideNfc}
+      ></AnimatedHitoNFCModal>
+
       <BlockingActionModal modalVisible={blockingModalVisible} isLoadingAction>
         <Text style={styles.text}>
           {strings('connect_Hito_hardware.please_wait')}

@@ -32,7 +32,7 @@ const ConnectHipoInstruction = (props: IConnectHipoInstructionProps) => {
       screen: 'SimpleWebview',
       params: {
         url: KEYSTONE_SUPPORT_VIDEO,
-        title: strings('connect_hipo_hardware.description2'),
+        title: strings('connect_hito_hardware.description2'),
       },
     });
   };
@@ -41,7 +41,7 @@ const ConnectHipoInstruction = (props: IConnectHipoInstructionProps) => {
       screen: 'SimpleWebview',
       params: {
         url: KEYSTONE_LEARN_MORE,
-        title: strings('connect_hipo_hardware.keystone'),
+        title: strings('connect_hito_hardware.keystone'),
       },
     });
   };
@@ -50,7 +50,7 @@ const ConnectHipoInstruction = (props: IConnectHipoInstructionProps) => {
       screen: 'SimpleWebview',
       params: {
         url: KEYSTONE_SUPPORT,
-        title: strings('connect_hipo_hardware.description4'),
+        title: strings('connect_hito_hardware.description4'),
       },
     });
   };
@@ -60,40 +60,40 @@ const ConnectHipoInstruction = (props: IConnectHipoInstructionProps) => {
         contentContainerStyle={styles.container}
         style={styles.scrollWrapper}
       >
-        <Text style={styles.title}>{strings('connect_hipo_hardware.title')}</Text>
+        <Text style={styles.title}>{strings('connect_hito_hardware.title')}</Text>
         {renderAlert()}
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            {strings('connect_hipo_hardware.description1')}
+            {strings('connect_hito_hardware.description1')}
           </Text>
           <Text style={[styles.text, styles.link]} onPress={navigateToVideo}>
-            {strings('connect_hipo_hardware.description2')}
+            {strings('connect_hito_hardware.description2')}
           </Text>
           <Text style={styles.text}>
-            {strings('connect_hipo_hardware.description3')}
+            {strings('connect_hito_hardware.description3')}
           </Text>
           <Text style={styles.keystone}>
-            {strings('connect_hipo_hardware.keystone')}
+            {strings('connect_hito_hardware.keystone')}
           </Text>
           <View style={styles.buttonGroup}>
             <Text
               style={[styles.text, styles.link, styles.linkMarginRight]}
               onPress={navigateToLearnMore}
             >
-              {strings('connect_hipo_hardware.learnMore')}
+              {strings('connect_hito_hardware.learnMore')}
             </Text>
             <Text
               style={[styles.text, styles.link]}
               onPress={navigateToTutorial}
             >
-              {strings('connect_hipo_hardware.tutorial')}
+              {strings('connect_hito_hardware.tutorial')}
             </Text>
           </View>
           <Text style={styles.text}>
-            {strings('connect_hipo_hardware.description5')}
+            {strings('connect_hito_hardware.description5')}
           </Text>
           <Text style={styles.text}>
-            {strings('connect_hipo_hardware.description6')}
+            {strings('connect_hito_hardware.description6')}
           </Text>
         </View>
         <Image
@@ -108,7 +108,7 @@ const ConnectHipoInstruction = (props: IConnectHipoInstructionProps) => {
           onPress={onConnect}
           style={styles.button}
         >
-          {strings('connect_hipo_hardware.button_continue')}
+          {strings('connect_hito_hardware.button_continue')}
         </StyledButton>
       </View>
     </View>

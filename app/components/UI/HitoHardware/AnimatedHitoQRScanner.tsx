@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { colors, fontStyles } from '../../../styles/common';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon, { IconSize, IconName, IconColor }  from '../../../component-library/components/Icons/Icon';
 import { strings } from '../../../../locales/i18n';
 import { URRegistryDecoder } from '@keystonehq/ur-decoder';
 import Modal from 'react-native-modal';
@@ -23,64 +23,7 @@ import { SUPPORTED_UR_TYPE } from '../../../constants/hito';
 import { useTheme } from '../../../util/theme';
 import { Theme } from '../../../util/theme/models';
 import { useMetrics } from '../../hooks/useMetrics';
-
-const createStyles = (theme: Theme) =>
-  StyleSheet.create({
-    modal: {
-      margin: 0,
-    },
-    container: {
-      width: '100%',
-      height: '100%',
-      backgroundColor: theme.brandColors.black000,
-    },
-    preview: {
-      flex: 1,
-    },
-    innerView: {
-      flex: 1,
-    },
-    closeIcon: {
-      marginTop: 20,
-      marginRight: 20,
-      width: 40,
-      alignSelf: 'flex-end',
-    },
-    frame: {
-      width: 250,
-      height: 250,
-      alignSelf: 'center',
-      justifyContent: 'center',
-      marginTop: 100,
-      opacity: 0.5,
-    },
-    text: {
-      flex: 1,
-      fontSize: 17,
-      color: theme.brandColors.white000,
-      textAlign: 'center',
-      justifyContent: 'center',
-      marginTop: 100,
-    },
-    hint: {
-      backgroundColor: colors.whiteTransparent,
-      width: '100%',
-      height: 120,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    hintText: {
-      width: 240,
-      maxWidth: '80%',
-      color: theme.brandColors.black000,
-      textAlign: 'center',
-      fontSize: 16,
-      ...fontStyles.normal,
-    },
-    bold: {
-      ...fontStyles.bold,
-    },
-  });
+import createStyles from './styles';
 
 const frameImage = require('images/frame.png'); // eslint-disable-line import/no-commonjs
 
@@ -93,7 +36,7 @@ interface AnimatedHitoScannerProps {
   pauseHitoCode?: (x: boolean) => void;
 }
 
-const AnimatedHitoScannerModal = (props: AnimatedHitoScannerProps) => {
+const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
   const {
     visible,
     onScanError,
@@ -233,7 +176,7 @@ const AnimatedHitoScannerModal = (props: AnimatedHitoScannerProps) => {
           captureAudio={false}
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
-          onBarCodeRead={onBarCodeRead}
+          onBarCodeRead={onBarCodeRead} 
           flashMode={RNCamera.Constants.FlashMode.auto}
           androidCameraPermissionOptions={{
             title: strings('qr_scanner.allow_camera_dialog_title'),
@@ -241,11 +184,16 @@ const AnimatedHitoScannerModal = (props: AnimatedHitoScannerProps) => {
             buttonPositive: strings('qr_scanner.ok'),
             buttonNegative: strings('qr_scanner.cancel'),
           }}
-          onStatusChange={onStatusChange}
+          onStatusChange={onStatusChange} 
         >
           <SafeAreaView style={styles.innerView}>
             <TouchableOpacity style={styles.closeIcon} onPress={hideModal}>
-              <Icon name={'ios-close'} size={50} color={'white'} />
+              <Icon
+              name={IconName.Close}
+              size={IconSize.Md}
+              style={styles.closeIcon}
+              color={IconColor.Default}
+            />
             </TouchableOpacity>
             <Image source={frameImage} style={styles.frame} />
             <Text style={styles.text}>{`${strings('qr_scanner.scanning')} ${
@@ -259,4 +207,4 @@ const AnimatedHitoScannerModal = (props: AnimatedHitoScannerProps) => {
   );
 };
 
-export default AnimatedHitoScannerModal;
+export default AnimatedHitoQRScannerModal;

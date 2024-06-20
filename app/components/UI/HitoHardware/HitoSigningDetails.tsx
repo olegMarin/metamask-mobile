@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import { strings } from '../../../../locales/i18n';
 import AnimatedHitoCode from './AnimatedHitoCode';
-import AnimatedHitoScannerModal from './AnimatedHitoScanner';
+import AnimatedHitoScannerModal from './AnimatedHitoNFCModal';
 import { fontStyles } from '../../../styles/common';
 import AccountInfoCard from '../AccountInfoCard';
 import ActionView from '../ActionView';
