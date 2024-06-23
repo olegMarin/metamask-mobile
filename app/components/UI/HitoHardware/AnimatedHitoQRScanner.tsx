@@ -24,12 +24,17 @@ import { useTheme } from '../../../util/theme';
 import { Theme } from '../../../util/theme/models';
 import { useMetrics } from '../../hooks/useMetrics';
 import createStyles from './styles';
+import NfcBroadcast from './NfcBroadcast';
 
 const frameImage = require('images/frame.png'); // eslint-disable-line import/no-commonjs
 
 interface AnimatedHitoScannerProps {
+  currentToken: string;
   visible: boolean;
   purpose: 'sync' | 'sign';
+  selectedAccount: string[];
+  isNfcbroadcastSuccess: boolean;
+  onNfcBroadcastSuccess: ()=> void;
   onScanSuccess: (ur: UR) => void;
   onScanError: (error: string) => void;
   hideModal: () => void;
@@ -41,9 +46,13 @@ const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
     visible,
     onScanError,
     purpose,
+    selectedAccount,
+    isNfcbroadcastSuccess,
+    onNfcBroadcastSuccess,
     onScanSuccess,
     hideModal,
     pauseHitoCode,
+    currentToken,
   } = props;
 
   const [urDecoder, setURDecoder] = useState(new URRegistryDecoder());
@@ -195,7 +204,20 @@ const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
               color={IconColor.Default}
             />
             </TouchableOpacity>
-            <Image source={frameImage} style={styles.frame} />
+            {isNfcbroadcastSuccess?
+              <NfcBroadcast
+                visible = {true}
+                purpose={purpose}
+                currency={currency}
+                currencyNumberStandart={currencyNumberStandart}
+                account={account}
+                aesToken={currentToken}
+                onErrorNoSupportedNFC={()=>{}}//used to display error
+                onNfcBroadcastSuccess={onNfcBroadcastSuccess}
+              />
+            :
+              <Image source={frameImage} style={styles.frame} />
+            }
             <Text style={styles.text}>{`${strings('qr_scanner.scanning')} ${
               progress ? `${progress.toString()}%` : ''
             }`}</Text>

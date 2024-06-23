@@ -23,11 +23,11 @@ import { useTheme } from '../../../util/theme';
 import StyledButton from '../StyledButton';
 import Button, { ButtonVariants } from 'app/component-library/components/Buttons/Button';
 import Checkbox from 'app/component-library/components/Checkbox';
+import NfcBroadcast from './NfcBroadcast';
 
-
-const nfcImage = require('images/nfc.png'); // eslint-disable-line import/no-commonjs
 
 interface AnimatedHitoScannerProps {
+  currentToken: string;
   visible: boolean;
   purpose: 'sync' | 'sign';
   onNfcBroadcastSuccess: () => void;
@@ -36,6 +36,7 @@ interface AnimatedHitoScannerProps {
   onToggleShowNfcModule: () => void;//use to React.EventHandler<React.SyntheticEvent<any, Event>>;
   onScanError?: (error: string) => void;
   pauseHito?: (x: boolean) => void;
+  selectedAccount: string[];
 }
 
 const AnimatedHitoNFCModal = (props: AnimatedHitoScannerProps) => {
@@ -47,6 +48,8 @@ const AnimatedHitoNFCModal = (props: AnimatedHitoScannerProps) => {
     onNfcBroadcastSuccess,
     isShowNfcModule,
     onToggleShowNfcModule,
+    currentToken,
+    selectedAccount,
   } = props;
 
   const [progress, setProgress] = useState(0);
@@ -107,7 +110,16 @@ const AnimatedHitoNFCModal = (props: AnimatedHitoScannerProps) => {
               color={IconColor.Default}
             />
             </TouchableOpacity>
-            <Image source={nfcImage} style={styles.frame} />
+            <NfcBroadcast
+              visible = {true}
+              purpose={purpose}
+              currency={currency}
+              currencyNumberStandart={currencyNumberStandart}
+              account={account}
+              aesToken={currentToken}
+              onErrorNoSupportedNFC={()=>{}}//used to display error
+              onNfcBroadcastSuccess={onNfcBroadcastSuccess}
+            />
 
 
             <Text style={styles.text}>{`${strings('connect_hito_hardware.scanning')} ${

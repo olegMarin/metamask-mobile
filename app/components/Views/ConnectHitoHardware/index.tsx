@@ -39,6 +39,7 @@ import { BannerVariant } from 'app/component-library/components/Banners/Banner';
 import AnimatedHitoQRScannerModal from 'app/components/UI/HitoHardware/AnimatedHitoQRScanner';
 import AnimatedHitoNFCModal from '../../UI/HitoHardware/AnimatedHitoNFCModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import crypto from 'react-native-quick-crypto';
 
 interface IConnectHitoHardwareProps {
   navigation: any;
@@ -117,6 +118,12 @@ async function initiateHitoHardwareConnection(
   return [HitoInteractions, connectHitoHardwarePromise];
 }
 
+const gen32hex = () => {
+  let buffer: ArrayBuffer = crypto.randomBytes(32);
+  let hextoken: string = (buffer as Buffer).toString('hex');
+  return hextoken;
+}
+
 const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
   const { colors } = useTheme();
   const { trackEvent } = useMetrics();
@@ -132,9 +139,11 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
       reading: false,
     },
   });
+  const [currentToken, setCurrentToken] = useState(gen32hex());
   const [scannerVisible, setScannerVisible] = useState(false);
   const [nfcVisible, setNfcVisible] = useState(false);
   const [isShowHitoNfcModal, setShowHitoNfcModal] = useState(true);
+  const [isNfcbroadcastSuccess, setNfcbroadcastSuccess] = useState(false);
   const [blockingModalVisible, setBlockingModalVisible] = useState(false);
   const [accounts, setAccounts] = useState<
     { address: string; index: number; balance: string }[]
@@ -186,6 +195,7 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
   }
 
   const onNfcBroadcastSuccess = () => {
+    setNfcbroadcastSuccess(true);
     setNfcVisible(false);
     setScannerVisible(true);
   }
@@ -393,16 +403,22 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
       <AnimatedHitoQRScannerModal
         visible={scannerVisible}
         purpose={'sync'}
+        selectedAccount = {existingAccounts}
+        isNfcbroadcastSuccess = {isNfcbroadcastSuccess}
+        onNfcBroadcastSuccess = {onNfcBroadcastSuccess}
         onScanSuccess={onScanSuccess}
         onScanError={onScanError}
-        hideModal={hideScanner} />
+        hideModal={hideScanner}
+        currentToken={currentToken} />
       <AnimatedHitoNFCModal
         visible={nfcVisible}
         purpose={'sync'}
         isShowNfcModule={isShowHitoNfcModal}
+        selectedAccount = {existingAccounts}
         onToggleShowNfcModule={onToggleShowNfcModule}
         onNfcBroadcastSuccess={onNfcBroadcastSuccess}
         hideModal={hideNfc}
+        currentToken={currentToken}
       ></AnimatedHitoNFCModal>
 
       <BlockingActionModal modalVisible={blockingModalVisible} isLoadingAction>
