@@ -7,21 +7,22 @@ import NfcManager, { Ndef, NfcEvents, NfcTech } from 'react-native-nfc-manager';
 import { useTheme } from '../../../util/theme';
 
 import createStyles from './styles';
+import { NFC_PREFIX } from 'app/constants/hito';
 
 const nfcImage = require('images/nfc.png'); // eslint-disable-line import/no-commonjs
 
 interface NfcBroadcastProps {
     visible: boolean;
     purpose: 'sync' | 'sign';
-    currency: string;
-    currencyNumberStandart: string;
-    account: string;
     aesToken: string;
     onNfcBroadcastSuccess: () => void;
     onErrorNoSupportedNFC: () => void;
+    currency?: string;
+    currencyNumberStandart?: string;
+    account?: string;
 }
 
-const NfcBroadcast = async (props: NfcBroadcastProps) => {
+const NfcBroadcast = (props: NfcBroadcastProps) => {
     const [hasNfc, setHasNFC] = useState(false);
 
     const theme = useTheme();
@@ -43,7 +44,7 @@ const NfcBroadcast = async (props: NfcBroadcastProps) => {
     
     const writeNFC = async() => {
         let result = false;
-        let comandString = "hito.pair:"+props.currencyNumberStandart+"h:"+props.currency+"h:"+props.account+"h:"+props.aesToken+"";
+        let comandString = NFC_PREFIX + props.aesToken;
         try {
           await NfcManager.requestTechnology(NfcTech.Ndef);
           const bytes = Ndef.encodeMessage([Ndef.uriRecord(comandString)]);
@@ -63,12 +64,10 @@ const NfcBroadcast = async (props: NfcBroadcastProps) => {
     
       }
 
-  if(props.visible){ 
-    return ( 
-        <Image source={nfcImage} style={styles.frame} />
-    );
-  }else{
-    return (<Fragment></Fragment>);
-  }
+  return (
+    <Fragment>
+      {props.visible && <Image source={nfcImage} style={styles.frame} />}
+    </Fragment>
+  )
 }
 export default NfcBroadcast

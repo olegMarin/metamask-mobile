@@ -113,11 +113,8 @@ const AnimatedHitoNFCModal = (props: AnimatedHitoScannerProps) => {
             <NfcBroadcast
               visible = {true}
               purpose={purpose}
-              currency={currency}
-              currencyNumberStandart={currencyNumberStandart}
-              account={account}
               aesToken={currentToken}
-              onErrorNoSupportedNFC={()=>{}}//used to display error
+              onErrorNoSupportedNFC={()=>{}}//use to display error
               onNfcBroadcastSuccess={onNfcBroadcastSuccess}
             />
 

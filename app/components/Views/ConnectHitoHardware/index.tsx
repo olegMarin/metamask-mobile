@@ -268,21 +268,19 @@ const ConnectHitoHardware = ({ navigation }: IConnectHitoHardwareProps) => {
   }, [resetError, trackEvent]);
 
   const onScanSuccess = useCallback(
-    (ur: UR) => {
+    (urHexString: string) => { // ?CryptoJS.enc.Hex
       hideScanner();
-      trackEvent(MetaMetricsEvents.CONNECT_HARDWARE_WALLET_SUCCESS, {
-        device_type: 'Hito Hardware',
-      });
       if (!HitoInteractionsRef.current) {
         const errorMessage = 'Missing Hito keyring interactions';
         setErrorMsg(errorMessage);
         throw new Error(errorMessage);
       }
-      if (ur.type === SUPPORTED_UR_TYPE.CRYPTO_HDKEY) {
-        HitoInteractionsRef.current.submitCryptoHDKey(ur.cbor.toString('hex'));
-      } else {
-        HitoInteractionsRef.current.submitCryptoAccount(ur.cbor.toString('hex'));
-      }
+
+      HitoInteractionsRef.current.submitCryptoHDKey(urHexString);
+      
+      trackEvent(MetaMetricsEvents.CONNECT_HARDWARE_WALLET_SUCCESS, {
+        device_type: 'Hito Hardware',
+      });
       resetError();
     },
     [hideScanner, resetError, trackEvent],

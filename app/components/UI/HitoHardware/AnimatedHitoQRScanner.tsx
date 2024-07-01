@@ -13,9 +13,8 @@ import {
 } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { colors, fontStyles } from '../../../styles/common';
-import Icon, { IconSize, IconName, IconColor }  from '../../../component-library/components/Icons/Icon';
+import Icon, { IconSize, IconName, IconColor } from '../../../component-library/components/Icons/Icon';
 import { strings } from '../../../../locales/i18n';
-import { URRegistryDecoder } from '@keystonehq/ur-decoder';
 import Modal from 'react-native-modal';
 import { UR } from '@ngraveio/bc-ur';
 import { MetaMetricsEvents } from '../../../core/Analytics';
@@ -25,6 +24,7 @@ import { Theme } from '../../../util/theme/models';
 import { useMetrics } from '../../hooks/useMetrics';
 import createStyles from './styles';
 import NfcBroadcast from './NfcBroadcast';
+import { AES } from 'crypto-js';
 
 const frameImage = require('images/frame.png'); // eslint-disable-line import/no-commonjs
 
@@ -34,8 +34,8 @@ interface AnimatedHitoScannerProps {
   purpose: 'sync' | 'sign';
   selectedAccount: string[];
   isNfcbroadcastSuccess: boolean;
-  onNfcBroadcastSuccess: ()=> void;
-  onScanSuccess: (ur: UR) => void;
+  onNfcBroadcastSuccess: () => void;
+  onScanSuccess: (ur: string) => void;
   onScanError: (error: string) => void;
   hideModal: () => void;
   pauseHitoCode?: (x: boolean) => void;
@@ -55,7 +55,6 @@ const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
     currentToken,
   } = props;
 
-  const [urDecoder, setURDecoder] = useState(new URRegistryDecoder());
   const [progress, setProgress] = useState(0);
   const theme = useTheme();
   const { trackEvent } = useMetrics();
@@ -72,7 +71,6 @@ const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
   }
 
   const reset = useCallback(() => {
-    setURDecoder(new URRegistryDecoder());
     setProgress(0);
   }, []);
 
@@ -113,45 +111,36 @@ const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
       if (!response.data) {
         return;
       }
-      try {
-        const content = response.data;
-        urDecoder.receivePart(content);
-        setProgress(Math.ceil(urDecoder.getProgress() * 100));
-        if (urDecoder.isError()) {
+      const content = response.data;
+      setProgress(Math.ceil(100));
+      if (content.substring(0, 2) === '0x') {
+        onScanSuccess(content);
+        setProgress(0);
+      } else if (content.substring(0, 7) === 'aes-ccm') {
+        let hash = content.slice(8);
+        let decryptedData =  AES.decrypt(hash, currentToken);
+        let decriptedHexString = decryptedData.toString(CryptoJS.enc.Hex);
+        if (decriptedHexString.substring(0, 2) === '0x') {
+          onScanSuccess(decriptedHexString);
+          setProgress(0);
+        } else {
           trackEvent(MetaMetricsEvents.HARDWARE_WALLET_ERROR, {
             purpose,
-            error: urDecoder.resultError(),
+            error: 'not valid decripted address',
           });
           onScanError(strings('transaction.unknown_qr_code'));
-        } else if (urDecoder.isSuccess()) {
-          const ur = urDecoder.resultUR();
-          if (expectedURTypes.includes(ur.type)) {
-            onScanSuccess(ur);
-            setProgress(0);
-            setURDecoder(new URRegistryDecoder());
-          } else if (purpose === 'sync') {
-            trackEvent(MetaMetricsEvents.HARDWARE_WALLET_ERROR, {
-              purpose,
-              received_ur_type: ur.type,
-              error: 'invalid `sync` qr code',
-            });
-            onScanError(strings('transaction.invalid_qr_code_sync'));
-          } else {
-            trackEvent(MetaMetricsEvents.HARDWARE_WALLET_ERROR, {
-              purpose,
-              received_ur_type: ur.type,
-              error: 'invalid `sign` qr code',
-            });
-            onScanError(strings('transaction.invalid_qr_code_sign'));
-          }
         }
-      } catch (e) {
+      } else {
+        trackEvent(MetaMetricsEvents.HARDWARE_WALLET_ERROR, {
+          purpose,
+          error: 'not valid address in QR',
+        });
         onScanError(strings('transaction.unknown_qr_code'));
       }
+
     },
     [
       visible,
-      urDecoder,
       onScanError,
       expectedURTypes,
       purpose,
@@ -185,7 +174,7 @@ const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
           captureAudio={false}
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
-          onBarCodeRead={onBarCodeRead} 
+          onBarCodeRead={onBarCodeRead}
           flashMode={RNCamera.Constants.FlashMode.auto}
           androidCameraPermissionOptions={{
             title: strings('qr_scanner.allow_camera_dialog_title'),
@@ -193,34 +182,30 @@ const AnimatedHitoQRScannerModal = (props: AnimatedHitoScannerProps) => {
             buttonPositive: strings('qr_scanner.ok'),
             buttonNegative: strings('qr_scanner.cancel'),
           }}
-          onStatusChange={onStatusChange} 
+          onStatusChange={onStatusChange}
         >
           <SafeAreaView style={styles.innerView}>
             <TouchableOpacity style={styles.closeIcon} onPress={hideModal}>
               <Icon
-              name={IconName.Close}
-              size={IconSize.Md}
-              style={styles.closeIcon}
-              color={IconColor.Default}
-            />
+                name={IconName.Close}
+                size={IconSize.Md}
+                style={styles.closeIcon}
+                color={IconColor.Default}
+              />
             </TouchableOpacity>
-            {isNfcbroadcastSuccess?
+            {isNfcbroadcastSuccess ?
               <NfcBroadcast
-                visible = {true}
+                visible={true}
                 purpose={purpose}
-                currency={currency}
-                currencyNumberStandart={currencyNumberStandart}
-                account={account}
                 aesToken={currentToken}
-                onErrorNoSupportedNFC={()=>{}}//used to display error
+                onErrorNoSupportedNFC={() => { }}//used to display error
                 onNfcBroadcastSuccess={onNfcBroadcastSuccess}
               />
-            :
+              :
               <Image source={frameImage} style={styles.frame} />
             }
-            <Text style={styles.text}>{`${strings('qr_scanner.scanning')} ${
-              progress ? `${progress.toString()}%` : ''
-            }`}</Text>
+            <Text style={styles.text}>{`${strings('qr_scanner.scanning')} ${progress ? `${progress.toString()}%` : ''
+              }`}</Text>
           </SafeAreaView>
         </RNCamera>
         <View style={styles.hint}>{hintText}</View>
